@@ -12,6 +12,8 @@ On my laptop with Intel(R) Core(TM) i5-4210H CPU @ 2.90GHz, clang++ 8.0.1:
 Smaller time means faster, but does not necessarily mean better. You should
 also consider the period of each generator and and its "randomness quality".
 
+Some comments about the Boost generators are available in [their docs](https://www.boost.org/doc/libs/1_71_0/doc/html/boost_random/reference.html#boost_random.reference.generators).
+
 
 ## Compilation and usage
 

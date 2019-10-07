@@ -70,6 +70,41 @@ naive_benchmark(PRNG& generator, int count = 1<<14)
 }
 
 
+template<class PRNG>
+std::chrono::duration<double, std::nano>
+uniform_int_distribution_(PRNG& generator, int count = 1<<10)
+{
+	std::uint_fast64_t number;
+	std::uniform_int_distribution<int> dist(0, 1<<20);
+
+	auto start = std::chrono::high_resolution_clock::now();
+	for(int i = 0; i < count; i++)
+		number = dist(generator);
+	auto stop = std::chrono::high_resolution_clock::now();
+
+	number += 1; // just to get rid of -Wunused warning
+
+	auto duration = std::chrono::duration<double, std::nano>(stop - start);
+	duration /= count;
+
+	return duration;
+}
+
+
+template<class PRNG>
+std::vector<std::chrono::duration<double, std::nano>>
+uniform_int_distribution_benchmark(PRNG& generator, int count = 1<<14)
+{
+	std::vector<std::chrono::duration<double, std::nano>> durations;
+
+	for(int i = 0; i < count; i++)
+		durations.push_back(uniform_int_distribution_(generator));
+
+	return durations;
+}
+
+
+
 void print_statistics(std::string name,
                       std::string benchmark_name,
                       std::vector<std::chrono::duration<double, std::nano>>& timings)
@@ -99,6 +134,9 @@ void benchmarks(PRNG& generator, std::string name)
 {
 	auto naive_timings = naive_benchmark(generator);
 	print_statistics(name, "Naive benchmark", naive_timings);
+
+	auto int_dist = uniform_int_distribution_benchmark(generator);
+	print_statistics(name, "std::uniform_int_distribution", int_dist);
 }
 
 
@@ -107,7 +145,7 @@ int main()
 	std::cout << "PRNG; benchmark_name; average (ns); deviation (ns); variance (ns^2)"
 	          << std::endl;
 
-	benchmarks(std::rand, "std::rand - C library");
+	//benchmarks(std::rand, "std::rand - C library");
 
 	std::minstd_rand minst;
 	benchmarks(minst, "std::minst_rand");

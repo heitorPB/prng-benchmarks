@@ -8,14 +8,24 @@ import pandas as pd
 @click.option('--output', type=click.File('w'), default="results",
               help="Name of output file")
 def main(infile, output):
-    data = pd.read_csv(infile, sep="; ")#, engine="python")
-    ax = data.plot.bar(x="PRNG", y="average (ns)",
-                       yerr="deviation (ns)",
-                       logy=True)
-    ax.set_ylabel("Time (ns)")
-    ax.set_title("PRNG Benchmark")
-    ax.grid(which="both", axis="y", alpha=.2, linestyle="--")
-    plt.show()
+    data = pd.read_csv(infile, sep="; ")
+
+    benchmarks = set(data['benchmark_name'])
+    #ax = data.plot.bar(x="PRNG", y="average (ns)",
+    #                   yerr="deviation (ns)",
+    #                   logy=True)
+    for benchmark in benchmarks:
+        indexes = data.index[data['benchmark_name'] == benchmark].tolist()
+        ax = data.iloc[indexes].plot.bar(x="PRNG", y="average (ns)",
+                                         yerr="deviation (ns)",
+                                         logy=True)
+
+        ax.set_title("PRNG " + benchmark)
+        ax.set_ylabel("Time (ns)")
+        ax.grid(which="both", axis="y", alpha=.2, linestyle="--")
+        plt.show()
+
+        # TODO make all benchmarks in same plot
 
 
 if __name__ == '__main__':

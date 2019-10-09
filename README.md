@@ -5,7 +5,8 @@ Simple benchmarks for the common C++ Pseudo Random Number Generators.
 
 ## Results
 
-On my laptop with Intel(R) Core(TM) i5-4210H CPU @ 2.90GHz, clang++ 8.0.1:
+On my laptop with Intel(R) Core(TM) i5-4210H CPU @ 2.90GHz, clang++ 8.0.1,
+boost 1.71.0:
 
 ![](benchmarks-clang++.png)
 
@@ -29,8 +30,11 @@ $ make
 $ ./benchmarks
 ```
 
-The plotting script uses python3, matplotlib and pandas. The simplest way to run it is with the Makefile:
+The plotting script uses python3, matplotlib and pandas. The simplest way to
+run it is with the Makefile:
+
 ``` bash
+$ make
 $ make plots
 ```
 
@@ -43,6 +47,7 @@ Some ideas:
 - benchmark more generators
 - improve the plotting script
 - add another benchmark
+- refactor the code (it's quite ugly right now...)
 
 
 ## License

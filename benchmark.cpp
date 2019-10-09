@@ -28,6 +28,7 @@
 #include <vector>
 
 #include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/taus88.hpp>
 
 
@@ -57,6 +58,7 @@ naive_benchmark_(PRNG& generator, int count = 1<<10)
 }
 
 
+// TODO this function could be a generic one that calls a function f(prng)
 template<class PRNG>
 std::vector<std::chrono::duration<double, std::nano>>
 naive_benchmark(PRNG& generator, int count = 1<<14)
@@ -104,6 +106,40 @@ uniform_int_distribution_benchmark(PRNG& generator, int count = 1<<14)
 }
 
 
+template<class PRNG>
+std::chrono::duration<double, std::nano>
+boost_uniform_int_distribution_(PRNG& generator, int count = 1<<10)
+{
+	std::uint_fast64_t number;
+	boost::random::uniform_int_distribution<int> dist(0, 1<<20);
+
+	auto start = std::chrono::high_resolution_clock::now();
+	for(int i = 0; i < count; i++)
+		number = dist(generator);
+	auto stop = std::chrono::high_resolution_clock::now();
+
+	number += 1; // just to get rid of -Wunused warning
+
+	auto duration = std::chrono::duration<double, std::nano>(stop - start);
+	duration /= count;
+
+	return duration;
+}
+
+
+template<class PRNG>
+std::vector<std::chrono::duration<double, std::nano>>
+boost_uniform_int_distribution_benchmark(PRNG& generator, int count = 1<<14)
+{
+	std::vector<std::chrono::duration<double, std::nano>> durations;
+
+	for(int i = 0; i < count; i++)
+		durations.push_back(boost_uniform_int_distribution_(generator));
+
+	return durations;
+}
+
+
 
 void print_statistics(std::string name,
                       std::string benchmark_name,
@@ -137,6 +173,9 @@ void benchmarks(PRNG& generator, std::string name)
 
 	auto int_dist = uniform_int_distribution_benchmark(generator);
 	print_statistics(name, "std::uniform_int_distribution", int_dist);
+
+	auto boost_int_dist = boost_uniform_int_distribution_benchmark(generator);
+	print_statistics(name, "boost::uniform_int_distribution", boost_int_dist);
 }
 
 
@@ -178,7 +217,7 @@ int main()
 	benchmarks(b_mt19937_64, "boost::random::mt19937_64");
 
 	boost::random::mt11213b b_mt11213b;
-	benchmarks(b_mt11213b, "boost::random::mt1213b");
+	benchmarks(b_mt11213b, "boost::random::mt11213b");
 
 	boost::random::taus88 b_taus;
 	benchmarks(b_taus, "boost::random::taus88");

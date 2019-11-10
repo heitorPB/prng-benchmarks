@@ -2,7 +2,7 @@ SRCs = $(wildcard *.cpp)
 OBJS = $(SRCs:.cpp=.o)
 
 WFLAGS = -Wall -Wextra -Wshadow -Wold-style-cast -Weffc++
-CPPFLAGS = -O2 -march=native -std=c++17
+CPPFLAGS = -O3 -march=native -mtune=native -std=c++17
 
 BIN = benchmark
 
@@ -18,5 +18,5 @@ clean:
 	rm -f $(OBJS) $(BIN)
 
 plots:
-	./$(BIN) > $(OUT).csv
+	time ./$(BIN) > $(OUT).csv
 	python plot_results.py $(OUT).csv --output $(OUT).png

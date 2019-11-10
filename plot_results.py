@@ -33,7 +33,7 @@ def main(infile, output):
     axes.set_xticklabels(PRNGs)
     axes.tick_params(axis='x', labelrotation=90)
     axes.set_yscale('log')
-    axes.set_ylim(1e-0)
+    axes.set_ylim(1, 400)
     axes.legend()
 
     #plt.tight_layout(pad=0, w_pad=0, h_pad=0)

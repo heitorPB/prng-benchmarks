@@ -1,17 +1,18 @@
 # PRNG Benchmarks
 
-Simple benchmarks for the common C++ Pseudo Random Number Generators.
+Simple benchmarks for the common C++ Pseudo Random Number Generators and
+distributions.
 
 
 ## Results
 
 On my laptop with Intel(R) Core(TM) i5-4210H CPU @ 2.90GHz, clang++ 9.0.0,
-boost 1.71.0:
+glibc 2.30-2, boost 1.71.0:
 
 ![](benchmarks-clang++.png)
 
 On my laptop with Intel(R) Core(TM) i5-4210H CPU @ 2.90GHz, g++ 9.2.0,
-boost 1.71.0:
+glibc 2.30-2, boost 1.71.0:
 
 ![](benchmarks-g++.png)
 

@@ -5,10 +5,15 @@ Simple benchmarks for the common C++ Pseudo Random Number Generators.
 
 ## Results
 
-On my laptop with Intel(R) Core(TM) i5-4210H CPU @ 2.90GHz, clang++ 8.0.1,
+On my laptop with Intel(R) Core(TM) i5-4210H CPU @ 2.90GHz, clang++ 9.0.0,
 boost 1.71.0:
 
 ![](benchmarks-clang++.png)
+
+On my laptop with Intel(R) Core(TM) i5-4210H CPU @ 2.90GHz, g++ 9.2.0,
+boost 1.71.0:
+
+![](benchmarks-g++.png)
 
 Smaller time means faster, but does not necessarily mean better. You should
 also consider the period of each generator and and its "randomness quality".

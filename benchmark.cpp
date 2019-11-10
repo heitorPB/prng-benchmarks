@@ -28,9 +28,11 @@
 #include <vector>
 
 #include <boost/random/mersenne_twister.hpp>
-#include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/taus88.hpp>
 
+#include <boost/random/uniform_int_distribution.hpp>
+#include <boost/random/uniform_01.hpp>
+#include <boost/random/generate_canonical.hpp>
 
 /* TODO
  *
@@ -140,6 +142,110 @@ boost_uniform_int_distribution_benchmark(PRNG& generator, int count = 1<<14)
 }
 
 
+template<class PRNG>
+std::chrono::duration<double, std::nano>
+boost_01_(PRNG& generator, int count = 1<<10)
+{
+	std::uint_fast64_t number;
+	boost::random::uniform_01<> dist;
+
+	auto start = std::chrono::high_resolution_clock::now();
+	for(int i = 0; i < count; i++)
+		number = dist(generator);
+	auto stop = std::chrono::high_resolution_clock::now();
+
+	number += 1; // just to get rid of -Wunused warning
+
+	auto duration = std::chrono::duration<double, std::nano>(stop - start);
+	duration /= count;
+
+	return duration;
+}
+
+
+template<class PRNG>
+std::vector<std::chrono::duration<double, std::nano>>
+boost_01_benchmark(PRNG& generator, int count = 1<<14)
+{
+	std::vector<std::chrono::duration<double, std::nano>> durations;
+
+	for(int i = 0; i < count; i++)
+		durations.push_back(boost_01_(generator));
+
+	return durations;
+}
+
+
+template<class PRNG>
+std::chrono::duration<double, std::nano>
+boost_gen_canonical_(PRNG& generator, int count = 1<<10)
+{
+	double number;
+
+	auto start = std::chrono::high_resolution_clock::now();
+	for(int i = 0; i < count; i++)
+		number = boost::random::generate_canonical<double, 20>(generator);
+	auto stop = std::chrono::high_resolution_clock::now();
+
+	number += 1; // just to get rid of -Wunused warning
+
+	auto duration = std::chrono::duration<double, std::nano>(stop - start);
+	duration /= count;
+
+	return duration;
+}
+
+
+template<class PRNG>
+std::vector<std::chrono::duration<double, std::nano>>
+boost_gen_canonical_benchmark(PRNG& generator, int count = 1<<14)
+{
+	std::vector<std::chrono::duration<double, std::nano>> durations;
+
+	for(int i = 0; i < count; i++)
+		durations.push_back(boost_gen_canonical_(generator));
+
+	return durations;
+}
+
+
+template<class PRNG>
+std::chrono::duration<double, std::nano>
+std_gen_canonical_(PRNG& generator, int count = 1<<10)
+{
+	double number;
+
+	auto start = std::chrono::high_resolution_clock::now();
+	for(int i = 0; i < count; i++)
+		number = std::generate_canonical<double, 20>(generator);
+	auto stop = std::chrono::high_resolution_clock::now();
+
+	number += 1; // just to get rid of -Wunused warning
+
+	auto duration = std::chrono::duration<double, std::nano>(stop - start);
+	duration /= count;
+
+	return duration;
+}
+
+
+template<class PRNG>
+std::vector<std::chrono::duration<double, std::nano>>
+std_gen_canonical_benchmark(PRNG& generator, int count = 1<<14)
+{
+	std::vector<std::chrono::duration<double, std::nano>> durations;
+
+	for(int i = 0; i < count; i++)
+		durations.push_back(std_gen_canonical_(generator));
+
+	return durations;
+}
+
+
+
+
+
+
 
 void print_statistics(std::string name,
                       std::string benchmark_name,
@@ -176,6 +282,15 @@ void benchmarks(PRNG& generator, std::string name)
 
 	auto boost_int_dist = boost_uniform_int_distribution_benchmark(generator);
 	print_statistics(name, "boost::uniform_int_distribution", boost_int_dist);
+
+	auto boost_01 = boost_01_benchmark(generator);
+	print_statistics(name, "boost::uniform_01", boost_01);
+
+	auto boost_gen_canonical = boost_gen_canonical_benchmark(generator);
+	print_statistics(name, "boost::generate_canonical", boost_gen_canonical);
+
+	auto std_gen_canonical = std_gen_canonical_benchmark(generator);
+	print_statistics(name, "std::generate_canonical", std_gen_canonical);
 }
 
 
@@ -222,7 +337,7 @@ int main()
 	boost::random::taus88 b_taus;
 	benchmarks(b_taus, "boost::random::taus88");
 
-	// TODO add more boost generators
+	// TODO add more boost generators & distributions
 	// https://www.boost.org/doc/libs/1_71_0/doc/html/boost_random/reference.html#boost_random.reference.generators
 	return 0;
 }

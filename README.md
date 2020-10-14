@@ -6,13 +6,13 @@ distributions.
 
 ## Results
 
-On my laptop with Intel(R) Core(TM) i5-4210H CPU @ 2.90GHz, clang++ 9.0.0,
-glibc 2.30-2, boost 1.71.0:
+On my laptop with Intel(R) Core(TM) i5-4210H CPU @ 2.90GHz, clang++ 10.0.1,
+glibc 2.32-4, boost 1.72.0-2:
 
 ![](benchmarks-clang++.png)
 
-On my laptop with Intel(R) Core(TM) i5-4210H CPU @ 2.90GHz, g++ 9.2.0,
-glibc 2.30-2, boost 1.71.0:
+On my laptop with Intel(R) Core(TM) i5-4210H CPU @ 2.90GHz, g++ 10.2.0,
+glibc 2.32-4, boost 1.72.0-2:
 
 ![](benchmarks-g++.png)
 
@@ -37,12 +37,12 @@ $ make
 $ ./benchmarks
 ```
 
-The plotting script uses python3, matplotlib and pandas. The simplest way to
-run it is with the Makefile:
+The plotting script uses python3, matplotlib and pandas.
+
+The simplest way to compile, run, and plot is with the helper script `run.sh`
 
 ``` bash
-$ make
-$ make plots
+$ bash run.sh
 ```
 
 

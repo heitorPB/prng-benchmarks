@@ -7,11 +7,9 @@ import pandas as pd
 
 @click.command()
 @click.argument('infile', type=click.File('r'))
-@click.option('--output', type=click.File('w'), default="results",
-              help="Name of output file")
-def main(infile, output):
-    data = pd.read_csv(infile, sep="; ")
-    fig, axes = plt.subplots()
+def main(infile):
+    data = pd.read_csv(infile, sep="; ", engine='python')
+    fig, axes = plt.subplots(figsize=(16,9))
 
     benchmarks = data['benchmark_name'].unique()
     PRNGs = data['PRNG'].unique()
@@ -36,12 +34,8 @@ def main(infile, output):
     axes.set_ylim(0.5, 400) # in nanoseconds
     axes.legend()
 
-    #plt.tight_layout(pad=0, w_pad=0, h_pad=0)
-    plt.show()
-
-    # TODO
-    # - save png
-    # - one png for each benchmark
+    fig.savefig(f'benchmark.pdf',
+                bbox_inches='tight')
 
 
 if __name__ == '__main__':

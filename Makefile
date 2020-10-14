@@ -6,8 +6,6 @@ CPPFLAGS = -O3 -march=native -mtune=native -std=c++17
 
 BIN = benchmark
 
-OUT = results-$(CXX)
-
 .cpp.o:
 	$(CXX) $(WFLAGS) $(CPPFLAGS) -c $^ -o $@
 
@@ -16,7 +14,3 @@ all: $(OBJS)
 
 clean:
 	rm -f $(OBJS) $(BIN)
-
-plots:
-	time ./$(BIN) > $(OUT).csv
-	python plot_results.py $(OUT).csv --output $(OUT).png
